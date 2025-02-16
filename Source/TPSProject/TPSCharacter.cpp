@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputSubsystems.h"
+#include "EnemyFSM.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Blueprint/UserWidget.h"
@@ -180,6 +181,13 @@ void ATPSCharacter::InputFire ( const FInputActionValue& InputValue )
 			FVector dir = (endPos - startPos).GetSafeNormal ( );
 			FVector force = dir * hitComp->GetMass ( ) * 10000;
 			hitComp->AddForceAtLocation ( force , hitInfo.ImpactPoint );
+		}
+
+		auto enemy = hitInfo.GetActor ( )->GetDefaultSubobjectByName ( TEXT ( "FSM" ) );
+		if (enemy)
+		{
+			auto enemyFSM = Cast<UEnemyFSM>( enemy );
+			enemyFSM->OnDamageProcess();
 		}
 	}
 }
