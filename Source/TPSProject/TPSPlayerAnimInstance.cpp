@@ -14,4 +14,14 @@ void UTPSPlayerAnimInstance::NativeUpdateAnimation ( float DeltaSeconds )
 
 	Speed = FVector::DotProduct ( velocity , forwardVector );
 
+	IsInAir = player->GetCharacterMovement ( )->IsFalling ( );
+
+	FVector rightVector = player->GetActorRightVector ( );
+	Direction = FVector::DotProduct ( velocity , rightVector );
+}
+
+void UTPSPlayerAnimInstance::PlayAttackAnim ( )
+{
+	if (!AttackAnimMontage) return;
+	Montage_Play ( AttackAnimMontage );
 }

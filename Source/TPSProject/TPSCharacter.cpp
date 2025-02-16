@@ -8,8 +8,11 @@
 #include "EnemyFSM.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "TPSPlayerAnimInstance.h"
+
 
 ATPSCharacter::ATPSCharacter ( )
 {
@@ -70,6 +73,8 @@ void ATPSCharacter::BeginPlay ( )
 		}
 	}
 
+	GetCharacterMovement ( )->MaxWalkSpeed = WalkSpeed;
+
 	SniperUI = CreateWidget<UUserWidget> ( GetWorld ( ) , SniperUIFactory );
 
 	_CrossHairUI = CreateWidget<UUserWidget> ( GetWorld ( ) , CrossHairUIFactory );
@@ -117,6 +122,9 @@ void ATPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	
 		PlayerInput->BindAction ( IA_Sniper , ETriggerEvent::Started , this , &ATPSCharacter::SniperAim );
 		PlayerInput->BindAction ( IA_Sniper , ETriggerEvent::Completed , this , &ATPSCharacter::SniperAim );
+		
+		PlayerInput->BindAction ( IA_Run , ETriggerEvent::Started , this , &ATPSCharacter::InputRun );
+		PlayerInput->BindAction ( IA_Run , ETriggerEvent::Completed , this , &ATPSCharacter::InputRun );
 
 	}
 }
@@ -147,6 +155,10 @@ void ATPSCharacter::InputJump ( const FInputActionValue& InputValue )
 
 void ATPSCharacter::InputFire ( const FInputActionValue& InputValue )
 {
+	// 공격 애니메이션 재생
+	auto anim = Cast<UTPSPlayerAnimInstance> ( GetMesh ( )->GetAnimInstance());
+	if (anim) anim->PlayAttackAnim ( );
+
 	// 유탄총 사용시
 	if (bUsingGrenadeGun)
 	{
@@ -231,4 +243,15 @@ void ATPSCharacter::SniperAim ( const FInputActionValue& InputValue )
 		TpsCamComp->SetFieldOfView ( 90.f );
 		_CrossHairUI->AddToViewport ( );
 	}
+}
+
+void ATPSCharacter::InputRun ( )
+{
+	auto movement = GetCharacterMovement ( );
+	if (!movement) return;
+
+	if (movement->MaxWalkSpeed > WalkSpeed)
+		movement->MaxWalkSpeed = WalkSpeed;
+	else
+		movement->MaxWalkSpeed = RunSpeed;
 }

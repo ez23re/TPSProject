@@ -44,9 +44,6 @@ public:
 	UPROPERTY ( EditDefaultsOnly , Category = Input )
 	class UInputAction* IA_PlayerMove;
 
-	UPROPERTY ( EditDefaultsOnly , Category = PlayerSetting )
-	float WalkSpeed = 600.f;
-
 	FVector Direction;
 
 	void Move ( const struct FInputActionValue& InputValue );
@@ -102,4 +99,15 @@ public:
 
 	UPROPERTY ( )
 	class UUserWidget* _CrossHairUI;
+
+	UPROPERTY(EditAnywhere , Category = PlayerSetting)
+	float WalkSpeed = 200.f;
+
+	UPROPERTY ( EditAnywhere , Category = PlayerSetting )
+	float RunSpeed = 600.f;
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* IA_Run;
+	void InputRun ( );
+	
 };

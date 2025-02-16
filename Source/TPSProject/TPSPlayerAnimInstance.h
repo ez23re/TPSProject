@@ -15,4 +15,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=TPSPlayerAnimInstance)
 	float Speed = 0.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= TPSPlayerAnimInstance )
+	float Direction = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= TPSPlayerAnimInstance )
+	bool IsInAir;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= TPSPlayerAnimInstance )
+	class UAnimMontage* AttackAnimMontage;
+
+	void PlayAttackAnim ( );
 };
